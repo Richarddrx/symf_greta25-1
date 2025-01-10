@@ -17,6 +17,7 @@
     <p>{{ conference.date|date("d m Y h:i:s")}}</p>
     <a href="{{ path('app_conference.edit', {'id':conference.id})}}">modifier</a>
     <a href="{{ path('app_conference.supprimer', {'id':conference.id})}}">supprimer</a>
+    <a href="{{ path('app_conference.reservation', {'id':conference.id})}}">reserver</a>
     </div>
 </div>
 </div>
