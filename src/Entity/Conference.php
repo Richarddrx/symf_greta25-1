@@ -3,6 +3,8 @@
 namespace App\Entity;
 
 use App\Repository\ConferenceRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
@@ -31,6 +33,17 @@ class Conference
 
     #[ORM\OneToOne(cascade: ['persist', 'remove'])]
     private ?Image $image = null;
+
+    /**
+     * @var Collection<int, categorie>
+     */
+    #[ORM\ManyToMany(targetEntity: Categorie::class, inversedBy: 'conferences')]
+    private Collection $categorie;
+
+    public function __construct()
+    {
+        $this->categorie = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -105,6 +118,30 @@ class Conference
     public function setImage(?Image $image): static
     {
         $this->image = $image;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, categorie>
+     */
+    public function getCategorie(): Collection
+    {
+        return $this->categorie;
+    }
+
+    public function addCategorie(categorie $categorie): static
+    {
+        if (!$this->categorie->contains($categorie)) {
+            $this->categorie->add($categorie);
+        }
+
+        return $this;
+    }
+
+    public function removeCategorie(categorie $categorie): static
+    {
+        $this->categorie->removeElement($categorie);
 
         return $this;
     }

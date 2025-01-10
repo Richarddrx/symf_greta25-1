@@ -1,8 +1,8 @@
 <?php
-
 namespace App\Controller;
 
 use App\Entity\Conference;
+use App\Entity\Categorie;
 use App\Form\ConferenceType;
 use App\Repository\ConferenceRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -30,8 +30,28 @@ class ConferenceController extends AbstractController
 
         // si le formulaire est soummis et que le formulaire est valide
         if($form->isSubmitted()){
-            // dd($conference);
-            // $this->em->getRepository(conference::class);
+
+            // le chemin où on doit stocker l'image (nom de l'image)
+            //$_SERVER['DOCUMENT_ROOT'] => /Applications/MAMP/htdocs/symf_greta25/public/;
+            $chemin = $_SERVER['DOCUMENT_ROOT'].'uploads/images';
+
+            // récupération de l'objet file (pour pouvoir récupérer le nom de l'image par exemple)
+            $file = $conference->getImage()->getFile();
+
+            // récuperation du nom de l'image (il faut toujours utiliser la méthode             
+            //get_class_methods pour voir toutes les methodes de l'objet file . exemple 
+             //dd(get_class_methods($file)))
+            $nom_image = $file->getClientOriginalName();
+
+            // il faut hydrater les propriété alt et url
+            // le alt contienyt le nom de l'image
+            $conference->getImage()->setAlt($nom_image);
+            // l'url contient le chemin relatif de l'image + le nom de l'image
+            $conference->getImage()->setUrl('uploads/images/'.$nom_image);
+
+            // la methode move permet de mettre l'image dans le repertoire image
+            $file->move($chemin, $nom_image);
+
             $this->em->persist($conference);
             $this->em->flush();
             // redirection vers la page des conferences
@@ -46,11 +66,23 @@ class ConferenceController extends AbstractController
     public function conferences(Request $request, ConferenceRepository $repo): Response
     {
         $conferences = $repo->findAll();
+        $categories = $this->em->getRepository(Categorie::class)->findAll();
         // $this->em->getRepository(Conference::class)->findAll();
         return $this->render('conference/index.html.twig', [
             'conferences' => $conferences,
+            'categories'=>$categories
         ]);
     }
+    // #[Route('/conference/categorie/{nom}', name: 'app_conference.categorie')]
+    // public function categorie($nom, Request $request, ConferenceRepository $repo): Response
+    // {
+    //     $categories = $this->em->getRepository(Categorie::class)->findAll();
+    //     $conferences = $this->em->getRepository(Conference::class)->findByCategorie($nom);
+    //     return $this->render('conference/index.html.twig', [
+    //         'conferences' => $conferences,
+    //         'categories'=>$categories
+    //     ]);
+    // }
     #[Route('/conferences/details/{id}', name: 'app_conference.details')]
     public function details($id, Request $request, ConferenceRepository $repo): Response
     {
