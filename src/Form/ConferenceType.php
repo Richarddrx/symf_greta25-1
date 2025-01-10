@@ -20,16 +20,16 @@ class ConferenceType extends AbstractType
             ->add('lieu')
             ->add('prix')
             ->add('image',ImageType::class)
+            ->add('categorie', EntityType::class, [
+                        'class' => Categorie::class,
+                        'choice_label' => 'nom',
+                        'multiple' => true,
+                        'expanded' => true
+                    ])
             ->add('date', null, [
                 'widget' => 'single_text',
             ])
 
-    ->add('categorie', EntityType::class, [
-                'class' => Categorie::class,
-                'choice_label' => 'nom',
-                'multiple' => true,
-                'expanded' => true
-            ])
             ->add('Ajouter', SubmitType::class)
         ;
     }

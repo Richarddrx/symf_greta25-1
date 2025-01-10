@@ -73,16 +73,16 @@ class ConferenceController extends AbstractController
             'categories'=>$categories
         ]);
     }
-    // #[Route('/conference/categorie/{nom}', name: 'app_conference.categorie')]
-    // public function categorie($nom, Request $request, ConferenceRepository $repo): Response
-    // {
-    //     $categories = $this->em->getRepository(Categorie::class)->findAll();
-    //     $conferences = $this->em->getRepository(Conference::class)->findByCategorie($nom);
-    //     return $this->render('conference/index.html.twig', [
-    //         'conferences' => $conferences,
-    //         'categories'=>$categories
-    //     ]);
-    // }
+    #[Route('/conference/categorie/{nom}', name: 'app_conference.categorie')]
+    public function categorie($nom, Request $request, ConferenceRepository $repo): Response
+    {
+        $categories = $this->em->getRepository(Categorie::class)->findAll();
+        $conferences = $this->em->getRepository(Conference::class)->findByCategorie($nom);
+        return $this->render('conference/index.html.twig', [
+            'conferences' => $conferences,
+            'categories'=>$categories
+        ]);
+    }
     #[Route('/conferences/details/{id}', name: 'app_conference.details')]
     public function details($id, Request $request, ConferenceRepository $repo): Response
     {
