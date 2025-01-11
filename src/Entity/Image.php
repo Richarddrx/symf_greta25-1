@@ -19,7 +19,7 @@ class Image
     #[ORM\Column(length: 255)]
     private ?string $url = null;
 
-    #[ORM\Column(length: 255)]
+    
     private $file = null;
 
  

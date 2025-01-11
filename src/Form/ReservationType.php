@@ -2,29 +2,27 @@
 
 namespace App\Form;
 
-use App\Entity\Conference;
-use App\Entity\Categorie;
-use App\Entity\Image;
+use App\Entity\Reservation;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\Form\Extension\Core\Type\FileType;
 
-class ImageType extends AbstractType
+class ReservationType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options): void
     {
         $builder
-             ->add('alt')
-             ->add('url')
-            ->add('file', FileType::class)
+            ->add('contenu')
+            ->add('date', null, [
+                'widget' => 'single_text',
+            ])
         ;
     }
 
     public function configureOptions(OptionsResolver $resolver): void
     {
         $resolver->setDefaults([
-            'data_class' => Image::class,
+            'data_class' => Reservation::class,
         ]);
     }
 }
