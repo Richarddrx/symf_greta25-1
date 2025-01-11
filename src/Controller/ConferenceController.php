@@ -1,9 +1,11 @@
 <?php
 namespace App\Controller;
 
-use App\Entity\Conference;
 use App\Entity\Categorie;
+use App\Entity\Conference;
+use App\Entity\Reservation;
 use App\Form\ConferenceType;
+use App\Form\ReservationType;
 use App\Repository\ConferenceRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -126,4 +128,35 @@ class ConferenceController extends AbstractController
         $this->em->flush();
         return $this->redirectToRoute('app_conference.conferences');
     }
+    #[Route('/reservation/{id}', name: 'app_conference.reservation')]
+    public function reservation($id, Request $request, ConferenceRepository $repo): Response
+    {
+
+        $reservation = new Reservation();
+        // 
+        $form = $this->createForm(ReservationType::class, $reservation);
+
+        // cette fonction permet d'hydrater l'objet conférence
+        $form->handleRequest($request);
+
+        // si le formulaire est soummis et que le formulaire est valide
+        if($form->isSubmitted()){
+            // dump($id);
+            // dd($reservation);
+            $conference = $repo->find($id);
+            // dd($conference);
+            // $this->em->getRepository(Conference::class);
+            // $this->em->getRepository(Reservation::class);
+            $reservation->setConference($conference);
+            $this->em->persist($reservation);
+            $this->em->flush();
+            // redirection vers la page des conferences
+            return $this->redirectToRoute('app_conference.conferences');
+        }
+
+        return $this->render('reservation/reservation.html.twig', [
+            'form' => $form->createView(),
+        ]);
+    }
+
 }

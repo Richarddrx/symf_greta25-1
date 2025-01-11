@@ -2,9 +2,10 @@
 
 namespace App\Entity;
 
-use App\Repository\ReservationRepository;
+use DateTimeImmutable;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\ReservationRepository;
 
 #[ORM\Entity(repositoryClass: ReservationRepository::class)]
 class Reservation
@@ -14,19 +15,20 @@ class Reservation
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $contenu = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
     private ?\DateTimeInterface $date = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $lieu = null;
+    #[ORM\ManyToOne(inversedBy: 'reservations')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Conference $conference = null;
 
-    #[ORM\Column]
-    private ?float $prix = null;
-
-    public function getId(): ?int
+    public function __construct()
+    {
+        $this->date = new DateTimeImmutable();
+    }    public function getId(): ?int
     {
         return $this->id;
     }
@@ -55,26 +57,14 @@ class Reservation
         return $this;
     }
 
-    public function getLieu(): ?string
+    public function getConference(): ?Conference
     {
-        return $this->lieu;
+        return $this->conference;
     }
 
-    public function setLieu(string $lieu): static
+    public function setConference(?Conference $conference): static
     {
-        $this->lieu = $lieu;
-
-        return $this;
-    }
-
-    public function getPrix(): ?float
-    {
-        return $this->prix;
-    }
-
-    public function setPrix(float $prix): static
-    {
-        $this->prix = $prix;
+        $this->conference = $conference;
 
         return $this;
     }
